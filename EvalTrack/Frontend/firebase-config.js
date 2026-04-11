@@ -8,14 +8,15 @@ import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, dele
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Your web app's Firebase configuration
+// Project: EvalTrack-System (evaltrack-system-bd538)
 const firebaseConfig = {
-  apiKey: "AIzaSyA90M1tOW7qIjy3-odQaSyR4a6xcTlPObU",
-  authDomain: "evaltrack-system.firebaseapp.com",
-  projectId: "evaltrack-system",
-  storageBucket: "evaltrack-system.firebasestorage.app",
-  messagingSenderId: "407757043757",
-  appId: "1:407757043757:web:e8aef13e040c2777ba20a4",
-  measurementId: "G-MC0SLTSPLF"
+  apiKey: "AIzaSyADpJGV1Nz1BLFxR3QYbJLSBYJXxHt9hho",
+  authDomain: "evaltrack-system-bd538.firebaseapp.com",
+  projectId: "evaltrack-system-bd538",
+  storageBucket: "evaltrack-system-bd538.firebasestorage.app",
+  messagingSenderId: "202662855989",
+  appId: "1:202662855989:web:f37501ed7225005f50b87c",
+  measurementId: "G-87YFVHCGQ7"
 };
 
 // Initialize Firebase
@@ -55,4 +56,4 @@ export {
   getDownloadURL
 };
 
-console.log('Firebase initialized for EvalTrack');
+console.log('Firebase initialized for EvalTrack-System');
