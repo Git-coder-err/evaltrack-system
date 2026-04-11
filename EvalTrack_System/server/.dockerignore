@@ -1,0 +1,19 @@
+# Backend .dockerignore
+# Files to exclude from Docker build
+
+node_modules
+npm-debug.log
+.env
+.env.local
+.env.*.local
+*.log
+.git
+.gitignore
+README.md
+.vscode
+.idea
+*.md
+--image
+--region
+cd
+gcloud

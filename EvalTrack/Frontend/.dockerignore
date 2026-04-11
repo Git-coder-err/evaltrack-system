@@ -1,0 +1,13 @@
+# Frontend .dockerignore
+# Files to exclude from Docker build
+
+.git
+.gitignore
+*.md
+.vscode
+.idea
+node_modules
+npm-debug.log
+*.log
+.env
+.env.local

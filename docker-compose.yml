@@ -1,0 +1,71 @@
+# Docker Compose for EvalTrack System
+# This file orchestrates both frontend and backend services
+#
+# Usage:
+#   Development: docker-compose up -d
+#   Production:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#   Stop:        docker-compose down
+#   View logs:   docker-compose logs -f
+
+services:
+  # ===========================================
+  # BACKEND SERVICE (Node.js API Server)
+  # ===========================================
+  backend:
+    build:
+      context: ./EvalTrack_System/server
+      dockerfile: Dockerfile
+    container_name: evaltrack-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    env_file:
+      - ./EvalTrack_System/server/.env
+    networks:
+      - evaltrack-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ===========================================
+  # FRONTEND SERVICE (Nginx Static Files)
+  # ===========================================
+  frontend:
+    build:
+      context: ./EvalTrack/Frontend
+      dockerfile: Dockerfile
+    container_name: evaltrack-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - evaltrack-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+# ===========================================
+# NETWORKS
+# ===========================================
+networks:
+  evaltrack-network:
+    driver: bridge
+
+# ===========================================
+# VOLUMES (Optional - for data persistence)
+# ===========================================
+# volumes:
+#   mysql-data:
+#   redis-data:
