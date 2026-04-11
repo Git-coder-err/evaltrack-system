@@ -1,12 +1,4 @@
-Here is your **clean, well-arranged text format** of the curriculum. I structured it clearly so you can reuse it for your system (EvalTrack), documentation, or database import.
 
----
-
-# **JOSE MARIA COLLEGE FOUNDATION, INC.**
-
-Phil-Japan Friendship Highway, Sasa, Davao City, Philippines 8000
-**Office of the Registrar**
-**Student Curriculum Evaluation**
 
 **Curriculum:** BSIT
 
