@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:particles_fly/particles_fly.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/app_colors.dart';

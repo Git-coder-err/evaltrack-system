@@ -17,7 +17,6 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
   List<dynamic> _users = [];
-  bool _isLoading = true;
   String _searchQuery = '';
   String _roleFilter = '';
 
@@ -28,7 +27,6 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> _fetchUsers() async {
-    setState(() => _isLoading = true);
     try {
       final token = context.read<AuthProvider>().token;
       final response = await http.get(
@@ -40,8 +38,6 @@ class _AdminPageState extends State<AdminPage> {
       }
     } catch (e) {
       debugPrint('Error fetching users: $e');
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 
