@@ -895,6 +895,11 @@ app.get('/', (req, res) => {
     res.send('EvalTrack API is running...');
 });
 
+// Health check endpoint for Docker
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
 // Middleware to parse both JSON and FormData
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

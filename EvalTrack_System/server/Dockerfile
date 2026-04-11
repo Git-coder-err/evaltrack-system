@@ -4,16 +4,22 @@
 # Stage 1: Build stage
 FROM node:20-alpine AS builder
 
+# Install build dependencies for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++ gcc
+
 WORKDIR /app
 
 # Copy package files first (for better caching)
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (use npm install instead of ci for flexibility)
+RUN npm install --production
 
 # Stage 2: Production stage
 FROM node:20-alpine
+
+# Install runtime dependencies for native modules
+RUN apk add --no-cache python3 make g++ gcc
 
 WORKDIR /app
 
