@@ -1,0 +1,90 @@
+# Docker Compose for EvalTrack System
+# This file orchestrates all services: Frontend, Backend, and Database
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: evaltrack-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-evaltrack_root_pass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-evaltrack}
+      MYSQL_USER: ${MYSQL_USER:-evaltrack_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-evaltrack_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./server/database_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - evaltrack-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-evaltrack_root_pass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Backend API Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: evaltrack-server
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-evaltrack_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-evaltrack_pass}
+      DB_NAME: ${MYSQL_DATABASE:-evaltrack}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      GROQ_API_KEYS: ${GROQ_API_KEYS:-}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost,http://localhost:80,http://localhost:3000}
+    ports:
+      - "5000:5000"
+    networks:
+      - evaltrack-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: evaltrack-client
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    networks:
+      - evaltrack-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+# Named volumes for persistent data
+volumes:
+  mysql_data:
+    driver: local
+
+# Custom network for service communication
+networks:
+  evaltrack-network:
+    driver: bridge
